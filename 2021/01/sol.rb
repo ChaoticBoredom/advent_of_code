@@ -6,9 +6,7 @@ def count_increases(data)
   increases = 0
   last = nil
   data.each do |x|
-    if last && x > last
-      increases += 1
-    end
+    increases += 1 if last && x > last
     last = x
   end
 

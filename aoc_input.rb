@@ -12,7 +12,7 @@ def get_input(year, day)
   file_path = dir + "/input.txt"
   FileUtils.mkdir_p(dir)
   input = ""
-  if File.file?(file_path)
+  if File.file?(file_path) && !File.zero?(file_path)
     File.open(file_path, "r") do |f|
       input = f.read
     end
