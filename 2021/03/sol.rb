@@ -1,5 +1,4 @@
 require_relative "../../aoc_input"
-require "pry-byebug"
 
 input = get_input(2021, 3).split("\n")
 

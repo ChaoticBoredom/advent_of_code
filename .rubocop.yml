@@ -18,6 +18,7 @@ Metrics/MethodLength:
   CountAsOne:
     - 'array'
     - 'hash'
+  Max: 15
 
 Style/Documentation:
   Enabled: false

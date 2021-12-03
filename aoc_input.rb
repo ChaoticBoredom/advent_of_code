@@ -9,17 +9,14 @@ end
 def get_input(year, day)
   day_s = day.to_s.rjust(2, "0")
   dir = "#{source_root}/#{year}/#{day_s}"
-  file_path = dir + "/input.txt"
+  file_path = "#{dir}/input.txt"
   FileUtils.mkdir_p(dir)
   input = ""
   if File.file?(file_path) && !File.zero?(file_path)
-    File.open(file_path, "r") do |f|
-      input = f.read
-    end
+    File.open(file_path, "r") { |f| input = f.read }
   else
     File.open(file_path, "a+") do |f|
-      input = URI.open("https://adventofcode.com/#{year}/day/#{day}/input", headers).read
-      f.write(input)
+      f.write(URI.open("https://adventofcode.com/#{year}/day/#{day}/input", headers).read)
     end
   end
 
