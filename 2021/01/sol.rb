@@ -17,6 +17,7 @@ puts count_increases(input)
 
 sums = input.map.with_index do |x, idx|
   next unless (idx + 2) < input.size
+
   x + input[idx + 1] + input[idx + 2]
 end
 
