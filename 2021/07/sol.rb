@@ -18,4 +18,4 @@ def calc_fuel(input)
 end
 
 puts calc_fuel(input) { |fuel| fuel }
-puts calc_fuel(input) { |fuel| 1.upto(fuel).sum }
+puts calc_fuel(input) { |fuel| ((fuel + 1) * fuel) / 2 }
