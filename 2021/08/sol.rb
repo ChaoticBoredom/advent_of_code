@@ -13,7 +13,7 @@ end
 
 puts easy_nums
 
-def solve_inputs(input, output)
+def solve_inputs(input)
   one = input.select { |i| i.count == 2 }.first
   seven = input.select { |i| i.count == 3 }.first
   eight = input.select { |i| i.count == 7 }.first
