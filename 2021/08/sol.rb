@@ -22,10 +22,7 @@ def solve_inputs(input)
   sixes_nines_zeros = input.select { |i| i.count == 6 }
 
   two, three, five, six, nine, zero = nil
-  twos_threes_fives.each do |x|
-    chars = x - four - seven
-    two = x if chars.size > 1
-  end
+  two = twos_threes_fives.select { |x| (x - four - seven).size > 1 }.first
 
   twos_threes_fives.each do |x|
     chars = x - two
