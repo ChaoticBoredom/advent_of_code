@@ -13,24 +13,21 @@ end
 
 puts easy_nums
 
-def solve_inputs(input)
-  one = input.select { |i| i.count == 2 }.first
-  seven = input.select { |i| i.count == 3 }.first
-  eight = input.select { |i| i.count == 7 }.first
-  four = input.select { |i| i.count == 4 }.first
-  twos_threes_fives = input.select { |i| i.count == 5 }
-  sixes_nines_zeros = input.select { |i| i.count == 6 }
+def find_two_three_five(coll, four, seven)
+  two = coll.select { |x| (x - four - seven).count > 1 }.first
 
-  two, three, five, six, nine, zero = nil
-  two = twos_threes_fives.select { |x| (x - four - seven).size > 1 }.first
-
-  twos_threes_fives.each do |x|
+  three, five = nil
+  coll.each do |x|
     chars = x - two
     three = x if chars.one?
     five = x if chars.count > 1
   end
+  [two, three, five]
+end
 
-  sixes_nines_zeros.each do |x|
+def find_six_nine_zero(coll, five, one)
+  six, nine, zero = nil
+  coll.each do |x|
     chars = x - five
     if chars.one?
       if (chars - one).empty?
@@ -42,6 +39,20 @@ def solve_inputs(input)
       zero = x
     end
   end
+  [six, nine, zero]
+end
+
+def solve_inputs(input)
+  one = input.select { |i| i.count == 2 }.first
+  seven = input.select { |i| i.count == 3 }.first
+  eight = input.select { |i| i.count == 7 }.first
+  four = input.select { |i| i.count == 4 }.first
+  twos_threes_fives = input.select { |i| i.count == 5 }
+  sixes_nines_zeros = input.select { |i| i.count == 6 }
+
+  two, three, five = find_two_three_five(twos_threes_fives, four, seven)
+
+  six, nine, zero = find_six_nine_zero(sixes_nines_zeros, five, one)
 
   {
     one.sort => 1,
