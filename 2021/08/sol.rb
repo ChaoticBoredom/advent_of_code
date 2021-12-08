@@ -2,26 +2,24 @@ require_relative "../../aoc_input"
 
 input = get_input(2021, 8).split("\n")
 
-uniq_outputs = { 1 => 2, 4 => 4, 7 => 3, 8 => 7 }
-
-vals = input.map { |i| i.split(" | ").map { |x| x.split(" ") } }
+vals = input.map { |i| i.split(" | ").map { |x| x.split(" ") }.map { |x| x.map { |y| y.split("") } } }
 
 easy_nums = 0
 vals.each do |_, y|
   y.each do |val|
-    easy_nums += 1 if uniq_outputs.values.include?(val.size)
+    easy_nums += 1 if [2, 4, 3, 7].include?(val.count)
   end
 end
 
 puts easy_nums
 
 def solve_inputs(input, output)
-  one = input.select { |i| i.size == 2 }.map { |x| x.split("") }.first # Select 1
-  seven = input.select { |i| i.size == 3 }.map { |x| x.split("") }.first # Select 7
-  eight = input.select { |i| i.size == 7 }.map { |x| x.split("") }.first # Select 8
-  four = input.select { |i| i.size == 4 }.map { |x| x.split("") }.first # Select 4
-  twos_threes_fives = input.select { |i| i.size == 5 }.map { |x| x.split("") } # Select 2s, 3s, 5s
-  sixes_nines_zeros = input.select { |i| i.size == 6 }.map { |x| x.split("") } # Select 6s, 9s, 0s
+  one = input.select { |i| i.count == 2 }.first
+  seven = input.select { |i| i.count == 3 }.first
+  eight = input.select { |i| i.count == 7 }.first
+  four = input.select { |i| i.count == 4 }.first
+  twos_threes_fives = input.select { |i| i.count == 5 }
+  sixes_nines_zeros = input.select { |i| i.count == 6 }
 
   two, three, five, six, nine, zero = nil
   twos_threes_fives.each do |x|
@@ -48,7 +46,7 @@ def solve_inputs(input, output)
     end
   end
 
-  numbers = {
+  {
     one.sort => 1,
     two.sort => 2,
     three.sort => 3,
@@ -60,15 +58,18 @@ def solve_inputs(input, output)
     nine.sort => 9,
     zero.sort => 0,
   }
+end
 
+def get_outputs(output, numbers)
   value = []
-  output.map { |x| x.split("").sort }.each { |x| value << numbers[x] }
+  output.map(&:sort).each { |x| value << numbers[x] }
   value.join.to_i
 end
 
 results = []
 vals.each do |x, y|
-  results << solve_inputs(x, y)
+  numbers = solve_inputs(x)
+  results << get_outputs(y, numbers)
 end
 
 puts results.sum
