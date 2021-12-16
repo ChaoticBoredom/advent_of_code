@@ -41,13 +41,35 @@ def get_literal(input)
   [nums.join.to_i(2)]
 end
 
-def clear_trailing_from_last_packet(input)
-  input.dup.each_with_index do |x, idx|
-    break unless x.to_i.zero?
-    break unless input[idx + 1].to_i.zero?
-    break unless input[idx + 2].to_i.zero?
+def solve_operator_by_size(input, versions, nums)
+  size = get_packet_size(input)
+  start_size = input.size
+  while input.size > start_size - size
+    versions, new_num = parse(input, versions)
+    nums += new_num
+  end
+  [versions, nums]
+end
 
-    input.shift
+def solve_operator_by_count(input, versions, nums)
+  size = get_packet_count(input)
+  until nums.size >= size
+    versions, new_num = parse(input, versions)
+    nums += new_num
+  end
+  [versions, nums]
+end
+
+def solve_operator(type, nums)
+  nums.flatten!
+  case type
+  when 0 then nums.sum
+  when 1 then nums.inject(:*)
+  when 2 then nums.min
+  when 3 then nums.max
+  when 5 then nums.first > nums.last ? 1 : 0
+  when 6 then nums.first < nums.last ? 1 : 0
+  when 7 then nums.first == nums.last ? 1 : 0
   end
 end
 
@@ -56,43 +78,15 @@ def parse(input, versions)
   v = get_version(input)
   versions << v
   t = get_type(input)
-  case t
-  when 4
+  if t == 4
     res = get_literal(input)
   else
     l = get_operator_length(input)
-    case l
-    when 0
-      size = get_packet_size(input)
-      start_size = input.size
-      while input.size > start_size - size
-        versions, new_num = parse(input, versions)
-        nums += new_num
-      end
-    when 1
-      size = get_packet_count(input)
-      until nums.size >= size
-        versions, new_num = parse(input, versions)
-        nums += new_num
-      end
-    end
-    nums.flatten!
-    res = case t
-          when 0
-            nums.sum
-          when 1
-            nums.inject(:*)
-          when 2
-            nums.min
-          when 3
-            nums.max
-          when 5
-            nums.first > nums.last ? 1 : 0
-          when 6
-            nums.first < nums.last ? 1 : 0
-          when 7
-            nums.first == nums.last ? 1 : 0
-          end
+    versions, nums =  case l
+                      when 0 then solve_operator_by_size(input, versions, nums)
+                      when 1 then solve_operator_by_count(input, versions, nums)
+                      end
+    res = solve_operator(t, nums)
   end
   [versions, [res]]
 end
