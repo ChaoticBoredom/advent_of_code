@@ -1,6 +1,7 @@
 require "fileutils"
 require "time"
 require "open-uri"
+require "pry-byebug"
 
 def self.source_root
   File.expand_path("./", File.dirname(__FILE__))
@@ -16,7 +17,9 @@ def get_input(year, day)
     File.open(file_path, "r") { |f| input = f.read }
   else
     File.open(file_path, "a+") do |f|
-      f.write(URI.open("https://adventofcode.com/#{year}/day/#{day}/input", headers).read)
+      input = URI.open("https://adventofcode.com/#{year}/day/#{day}/input", headers).read
+      f.write(input)
+      input
     end
   end
 
@@ -26,9 +29,9 @@ rescue OpenURI::HTTPError
 end
 
 def headers
-  @headers ||= { "Cookie" => ENV.fetch("COOKIE") do
-    File.read("#{source_root}/.session/cookie").strip
-  end }
+  @headers ||= {
+    "Cookie" => ENV.fetch("COOKIE") { File.read("#{source_root}/.session/cookie").strip },
+  }
 end
 
 if __FILE__ == $PROGRAM_NAME
