@@ -1,5 +1,3 @@
-require "matrix"
-
 require_relative "../../aoc_input"
 
 input = get_input(2021, 19).split("\n\n")
