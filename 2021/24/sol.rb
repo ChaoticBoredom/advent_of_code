@@ -2,6 +2,25 @@ require_relative "../../aoc_input"
 
 program = get_input(2021, 24).split("\n").each_slice(18).to_a
 
+# inp w
+# mul x 0
+# add x z
+# mod x 26
+# div z \d+
+# add x (-)?\d+
+# eql x w
+# eql x 0
+# mul y 0
+# add y 25
+# mul y x
+# add y 1
+# mul z y
+# mul y 0
+# add y w
+# add y \d+
+# mul y x
+# add z y
+
 def run_program(program, input)
   w = x = y = z = 0
   program.each do |line|
