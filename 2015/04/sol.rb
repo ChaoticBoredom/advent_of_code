@@ -16,4 +16,3 @@ end
 
 puts find_number(input, 5)
 puts find_number(input, 6)
-
