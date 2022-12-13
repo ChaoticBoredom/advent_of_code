@@ -12,7 +12,7 @@ end
 def find_all_possible_starts(input)
   starts = []
   input.each.with_index do |line, idx|
-    (0...line.length).find_all { |c| line[c]  == "a" }.each do |c|
+    (0...line.length).find_all { |c| line[c] == "a" }.each do |c|
       starts << [idx, c]
     end
   end
@@ -28,7 +28,7 @@ def valid_next_step?(next_step, current, input)
   curr_height = input[current[0]][current[1]]
   next_height = input[next_step[0]][next_step[1]]
 
-  return false unless next_height.between?(curr_height, curr_height + 1)
+  return false unless next_height <= curr_height + 1
 
   true
 end
@@ -50,6 +50,7 @@ def find_path(input, start, target)
       search_path << [next_step, steps + 1] if valid_next_step?(next_step, loc, input)
     end
   end
+  puts "FAIL"
 end
 
 start = find_loc(input, "S")
