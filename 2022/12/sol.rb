@@ -50,7 +50,6 @@ def find_path(input, start, target)
       search_path << [next_step, steps + 1] if valid_next_step?(next_step, loc, input)
     end
   end
-  puts "FAIL"
 end
 
 start = find_loc(input, "S")
