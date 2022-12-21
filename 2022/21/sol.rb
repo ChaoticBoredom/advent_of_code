@@ -72,7 +72,7 @@ op = /\w+ (.) \w+/.match(monkeys["root"])[1]
 monkeys["root"].sub!(op, "==")
 monkeys["humn"] = "notarealmonkey"
 
-1000.times do
+25.times do
   solve(monkeys)
 end
 
