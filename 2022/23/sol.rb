@@ -16,7 +16,7 @@ def add_arrays(arr1, arr2)
 end
 
 class Elf
-  attr_accessor :loc, :next_loc
+  attr_accessor :loc, :next_loc, :moved
 
   def initialize(x, y)
     @loc = [x, y]
@@ -39,11 +39,15 @@ class Elf
   end
 
   def move(moves)
-    @loc = @next_loc unless moves.key?(@next_loc)
+    return if moves.key?(@next_loc)
+
+    @loc = @next_loc
+    @moved = true
   end
 
   def clear_next
     @next_loc = nil
+    @moved = false
   end
 end
 
@@ -59,19 +63,15 @@ end
 
 def run_round(elves, directions)
   elves.each { |_, e| e.propose_move(elves, directions) }
-  moves = {}
-  elves.each_value { |e| moves.key?(e.next_loc) ? moves[e.next_loc] << e : moves[e.next_loc] = [e] }
-  moves.select! { |_, v| v.count > 1 }
+  moves = elves.each_value.group_by(&:next_loc).select { |_, v| v.count > 1 }
   elves.each { |_, e| e.move(moves) }
+  elves_moved = elves.values.map(&:moved).any?
   elves.each_value(&:clear_next)
+  elves_moved
 end
 
 def map_elves(elves)
-  new_elves = {}
-  elves.each do |_, e|
-    new_elves[e.loc] = e
-  end
-  new_elves
+  elves.values.to_h { |e| [e.loc, e] }
 end
 
 def print_elves(elves)
@@ -93,14 +93,13 @@ def find_empty_squares(elves)
 end
 
 elves = get_elves(input)
-prev_elves = {}
 index = 0
+elves_moved = true
 
 directions = ["N", "S", "W", "E"]
 
-until elves == prev_elves
-  run_round(elves, directions)
-  prev_elves = elves
+while elves_moved
+  elves_moved = run_round(elves, directions)
   elves = map_elves(elves)
   directions.rotate!
   index += 1
