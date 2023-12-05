@@ -52,25 +52,17 @@ def get_mappings(str)
 end
 
 def get_location(seed)
-  soil = get_next_val(seed, SEED_TO_SOIL)
-  fert = get_next_val(soil, SOIL_TO_FERT)
-  water = get_next_val(fert, FERT_TO_WATER)
-  light = get_next_val(water, WATER_TO_LIGHT)
-  temp = get_next_val(light, LIGHT_TO_TEMP)
-  humid = get_next_val(temp, TEMP_TO_HUMID)
-  get_next_val(humid, HUMID_TO_LOC)
+  MAPPINGS.each do |mapping|
+    seed = get_next_val(seed, mapping)
+  end
+  seed
 end
 
 def is_seed?(location, seeds)
-  humid = get_prev_val(location, HUMID_TO_LOC)
-  temp = get_prev_val(humid, TEMP_TO_HUMID)
-  light = get_prev_val(temp, LIGHT_TO_TEMP)
-  water = get_prev_val(light, WATER_TO_LIGHT)
-  fert = get_prev_val(water, FERT_TO_WATER)
-  soil = get_prev_val(fert, SOIL_TO_FERT)
-  seed = get_prev_val(soil, SEED_TO_SOIL)
-
-  seeds.any? { |r| r.cover?(seed) }
+  MAPPINGS.reverse.each do |mapping|
+    location = get_prev_val(location, mapping)
+  end
+  seeds.any? { |r| r.cover?(location) }
 end
 
 def get_prev_val(val, mapping)
@@ -95,6 +87,8 @@ WATER_TO_LIGHT = get_mappings(input.select { |v| v.match?(/water-to-light map:/)
 LIGHT_TO_TEMP = get_mappings(input.select { |v| v.match?(/light-to-temperature map:/) }.first )
 TEMP_TO_HUMID = get_mappings(input.select { |v| v.match?(/temperature-to-humidity map:/) }.first )
 HUMID_TO_LOC = get_mappings(input.select { |v| v.match?(/humidity-to-location map:/) }.first )
+
+MAPPINGS = [SEED_TO_SOIL, SOIL_TO_FERT, FERT_TO_WATER, WATER_TO_LIGHT, LIGHT_TO_TEMP, TEMP_TO_HUMID, HUMID_TO_LOC]
 
 puts solve_part_1
 puts solve_part_2
