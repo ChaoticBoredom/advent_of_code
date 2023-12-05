@@ -80,15 +80,16 @@ def get_next_val(val, mapping)
 end
 
 SEED_NUMBERS = get_seeds(input.select { |v| v.match?(/seeds: /) }.first )
-SEED_TO_SOIL = get_mappings(input.select { |v| v.match?(/seed-to-soil map:/) }.first )
-SOIL_TO_FERT = get_mappings(input.select { |v| v.match?(/soil-to-fertilizer map:/) }.first )
-FERT_TO_WATER = get_mappings(input.select { |v| v.match?(/fertilizer-to-water map:/) }.first )
-WATER_TO_LIGHT = get_mappings(input.select { |v| v.match?(/water-to-light map:/) }.first )
-LIGHT_TO_TEMP = get_mappings(input.select { |v| v.match?(/light-to-temperature map:/) }.first )
-TEMP_TO_HUMID = get_mappings(input.select { |v| v.match?(/temperature-to-humidity map:/) }.first )
-HUMID_TO_LOC = get_mappings(input.select { |v| v.match?(/humidity-to-location map:/) }.first )
 
-MAPPINGS = [SEED_TO_SOIL, SOIL_TO_FERT, FERT_TO_WATER, WATER_TO_LIGHT, LIGHT_TO_TEMP, TEMP_TO_HUMID, HUMID_TO_LOC]
+MAPPINGS = [
+  /seed-to-soil map:/,
+  /soil-to-fertilizer map:/,
+  /fertilizer-to-water map:/,
+  /water-to-light map:/,
+  /light-to-temperature map:/,
+  /temperature-to-humidity map:/,
+  /humidity-to-location map:/,
+].map { |v| get_mappings(input.select { |l| l.match?(v) }.first) }
 
 puts solve_part_1
 puts solve_part_2
