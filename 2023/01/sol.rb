@@ -16,7 +16,7 @@ sub_list = {
   "nine" => "9",
 }
 
-rx = Regexp.new("(?=(\\d|" + sub_list.keys.join("|") + "))")
+rx = Regexp.new("(?=(\\d|#{sub_list.keys.join('|')}))")
 
 x = input.map do |val|
   val.scan(rx).flatten.map { |v| sub_list.key?(v) ? sub_list[v] : v }.values_at(0, -1).join.to_i

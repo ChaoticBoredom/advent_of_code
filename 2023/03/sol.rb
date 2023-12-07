@@ -27,14 +27,13 @@ end
 
 def symbol_adjacent?(grid, x_start, x_end, y)
   [y - 1, y, y + 1].each do |idy|
-    Range.new((x_start - 1), (x_end)).to_a.each do |idx|
-
+    Range.new((x_start - 1), x_end).to_a.each do |idx|
       next if idy == y && idx.between?(x_start, x_end - 1)
 
       return true unless grid[[idx, idy]] == "."
     end
   end
-  return false
+  false
 end
 
 def get_gear_numbers(grid)
@@ -45,7 +44,7 @@ def get_gear_numbers(grid)
     adjacent_gears << get_gear_adjacent(grid, key[0], key[1])
   end
 
-  return adjacent_gears.select { |gp| gp.count > 1 }
+  adjacent_gears.select { |gp| gp.count > 1 }
 end
 
 def get_gear_adjacent(grid, x, y)
@@ -53,14 +52,12 @@ def get_gear_adjacent(grid, x, y)
 
   [y - 1, y, y + 1].each do |idy|
     [x - 1, x, x + 1].each do |idx|
-
       next unless /\d+/.match?(grid[[idx, idy]])
 
       gears << get_full_number(grid, idx, idy) unless grid[[idx, idy]].match?(/\+d/)
-
     end
   end
-  return gears.uniq
+  gears.uniq
 end
 
 def get_full_number(grid, idx, idy)

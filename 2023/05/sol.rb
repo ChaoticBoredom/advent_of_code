@@ -27,10 +27,10 @@ def count_up(start, increment)
     seeds << (seed...(seed + range))
   end
 
-  while true
+  Kernel.loop do
     location += increment
 
-    return location if is_seed?(location, seeds)
+    return location if seed?(location, seeds)
   end
 end
 
@@ -39,7 +39,7 @@ def get_seeds(str)
 end
 
 def get_mappings(str)
-  mappings = str.split("\n")[1..-1]
+  mappings = str.split("\n")[1..]
 
   mappings.map do |line|
     dest_range, source_range, range_length = line.scan(/\d+/).map(&:to_i)
@@ -58,7 +58,7 @@ def get_location(seed)
   seed
 end
 
-def is_seed?(location, seeds)
+def seed?(location, seeds)
   MAPPINGS.reverse.each do |mapping|
     location = get_prev_val(location, mapping)
   end
@@ -79,7 +79,7 @@ def get_next_val(val, mapping)
   val
 end
 
-SEED_NUMBERS = get_seeds(input.select { |v| v.match?(/seeds: /) }.first )
+SEED_NUMBERS = get_seeds(input.select { |v| v.match?(/seeds: /) }.first)
 
 MAPPINGS = [
   /seed-to-soil map:/,
