@@ -31,7 +31,7 @@ def get_prev_value(increments)
   increments.last.first
 end
 
-def solve_part_one(input)
+def solve(input, get_val_method)
   values = []
   input.each do |line|
     increments = []
@@ -39,25 +39,11 @@ def solve_part_one(input)
 
     increments << get_increments(increments.last) until increments.last.all?(&:zero?)
 
-    values << get_next_value(increments)
+    values << get_val_method.call(increments)
   end
 
   values.sum
 end
 
-def solve_part_two(input)
-  values = []
-  input.each do |line|
-    increments = []
-    increments << line.map(&:to_i)
-
-    increments << get_increments(increments.last) until increments.last.all?(&:zero?)
-
-    values << get_prev_value(increments)
-  end
-
-  values.sum
-end
-
-puts solve_part_one(input)
-puts solve_part_two(input)
+puts solve(input, method(:get_next_value))
+puts solve(input, method(:get_prev_value))
