@@ -39,7 +39,11 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
 
 Style/TrailingCommaInArrayLiteral:
-  EnforcedStyleForMultiline: comma 
+  EnforcedStyleForMultiline: comma
 
 Style/TrailingCommaInHashLiteral:
-  EnforcedStyleForMultiline: comma 
+  EnforcedStyleForMultiline: comma
+
+Style/WordArray:
+  EnforcedStyle: brackets
+
