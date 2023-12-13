@@ -33,8 +33,7 @@ def find_end(start_node, final_node, node_map, instructions, start_idx)
 end
 
 def part_one(node_map, instructions)
-  s, = find_end("AAA", /ZZZ/, node_map, instructions, 0)
-  s
+  find_end("AAA", /ZZZ/, node_map, instructions, 0).first
 end
 
 def part_two(node_map, instructions)

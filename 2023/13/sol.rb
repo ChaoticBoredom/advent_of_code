@@ -7,9 +7,11 @@ def find_reflection(landscape, difference_counter)
     top, bot = get_splits(landscape, idx)
     next if top.empty? || bot.empty?
 
-    return idx if difference_counter && off_by_one?(top, bot.reverse)
-
-    return idx if top == bot.reverse && !difference_counter
+    if difference_counter
+      return idx if off_by_one?(top, bot.reverse)
+    elsif top == bot.reverse
+      return idx
+    end
   end
   nil
 end
