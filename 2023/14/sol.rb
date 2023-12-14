@@ -2,99 +2,69 @@ require_relative "../../aoc_input"
 
 input = get_input(2023, 14).split("\n")
 
-@map = Hash.new(".")
-
-def build_map(input)
-  input.each.with_index do |line, idy|
-    line.chars.each.with_index do |c, idx|
-      @map[[idx, idy]] = c unless c == "."
-    end
-  end
-end
-
-def max_values
-  @max ||= @map.keys.transpose.map(&:max)
-  [@max[0], @max[1]]
-end
-
-def print_map
-  max_x, max_y = max_values
-  0.upto(max_y) do |y|
-    0.upto(max_x) do |x|
-      print @map[[x, y]]
-    end
-    print "\n"
-  end
-end
-
-def north_south(range, check, final)
-  range do |new_y|
-    if @map.key?([x, new_y].zip(check).map(&:sum))
-      @map.delete([x, y])
-      @map[[x, new_y]] = "O"
-      return
-    end
-  end
-  @map.delete([x, y])
-  @map[[x, final]] = "O"
-end
-
-def move_north(x, y)
-  y.downto(0) do |new_y|
-    if @map.key?([x, new_y - 1])
-      @map.delete([x, y])
-      @map[[x, new_y]] = "O"
-      return
-    end
-  end
-  @map.delete([x, y])
-  @map[[x, 0]] = "O"
-end
-
-def move_south(x, y)
-  max_x, max_y = max_values
-  y.upto(max_y) do |new_y|
-    if @map.key?([x, new_y + 1])
-      @map.delete([x, y])
-      @map[[x, new_y]] = "O"
-      return
-    end
-  end
-  @map.delete([x, y])
-  @map[[x, max_y]] = "O"
-end
-
-def roll(dir)
-  round_stones = @map.select { |_, v| v == "O" }
-
-  round_stones.each_key do |x, y|
-    move_north(x, y) if dir == "N"
-    move_south(x, y) if dir == "S"
-    move_west(x, y) if dir == "W"
-    move_east(x, y) if dir == "E"
-  end
-end
-
-def calc_load
-  _, max_y = @map.keys.transpose.map(&:max)
-  south_end = max_y + 1
-  round_stones = @map.select { |_, v| v == "O" }
+def new_calc_load(input)
+  max_y = input.count
   total = 0
-  round_stones.each_key do |key|
-    total += south_end - key[1]
+  input.each.with_index do |row, idx|
+    total += row.count("O") * (max_y - idx)
   end
   total
 end
 
-def spin
-  roll("N")
-  roll("W")
-  roll("S")
-  roll("E")
+def tilt(input, dir)
+  case dir
+  when "N"
+    slid_input = input.map(&:chars).transpose.map(&:join)
+    res = slid_input.map do |row|
+      row.split("#", -1).map { |s| s.chars.sort.reverse.join }.join("#")
+    end
+    res = res.map(&:chars).transpose.map(&:join)
+  when "S"
+    slid_input = input.map(&:chars).transpose.map(&:join)
+    res = slid_input.map do |row|
+      row.split("#", -1).map { |s| s.chars.sort.join }.join("#")
+    end
+    res = res.map(&:chars).transpose.map(&:join)
+  when "W"
+    res = input.map do |row|
+      row.split("#", -1).map { |s| s.chars.sort.reverse.join }.join("#")
+    end
+  when "E"
+    res = input.map do |row|
+      row.split("#", -1).map { |s| s.chars.sort.join }.join("#")
+    end
+  end
+  res
 end
 
-build_map(input)
-print_map
-roll("N")
-print_map
-puts calc_load
+def spin(input)
+  res = tilt(input, "N")
+  res = tilt(res, "W")
+  res = tilt(res, "S")
+  tilt(res, "E")
+end
+
+tilted = tilt(input, "N")
+puts new_calc_load(tilted)
+
+maps = []
+loop_start = nil
+current = nil
+res = input
+1_000_000_000.times do |i|
+  temp = res.join("\n")
+  if maps.include?(temp)
+    current = i
+    break unless loop_start.nil?
+
+    maps = []
+    loop_start = i
+  end
+
+  maps << temp
+  res = spin(res)
+end
+
+count = loop_start + (1_000_000_000 - loop_start) % (current - loop_start)
+
+puts new_calc_load(maps[count - loop_start].split("\n"))
