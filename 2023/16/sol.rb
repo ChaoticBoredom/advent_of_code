@@ -1,5 +1,5 @@
 require_relative "../../aoc_input"
-require 'set'
+require "set"
 
 input = get_input(2023, 16).split("\n")
 
