@@ -2,30 +2,6 @@ require_relative "../../aoc_input"
 
 wf, rt = get_input(2023, 19).split("\n\n")
 
-class Part
-  attr_accessor :x, :m, :a, :s
-
-  def initialize(string)
-    @x = string.match(/x=(\d+)/)[1].to_i
-    @m = string.match(/m=(\d+)/)[1].to_i
-    @a = string.match(/a=(\d+)/)[1].to_i
-    @s = string.match(/s=(\d+)/)[1].to_i
-  end
-
-  def val(string)
-    case string
-    when "x" then @x
-    when "m" then @m
-    when "a" then @a
-    when "s" then @s
-    end
-  end
-
-  def sum
-    @x + @m + @a + @s
-  end
-end
-
 def workflows(input = nil)
   return @workflows unless @workflows.nil?
 
