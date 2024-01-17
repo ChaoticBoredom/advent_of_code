@@ -10,9 +10,6 @@ input.each do |row|
   hail[loc] = vel
 end
 
-test_start = 200_000_000_000_000
-test_finsh = 400_000_000_000_000
-
 def intersections(hail, bounds_start, bounds_end)
   intersections = []
   hail.keys.combination(2) do |hail_a, hail_b|
@@ -72,6 +69,8 @@ def rock_throw(hail)
   [combine(e, w1, -f, w2, g, ww), s]
 end
 
+test_start = 200_000_000_000_000
+test_finsh = 400_000_000_000_000
 puts intersections(hail, test_start, test_finsh).count
 results = rock_throw(hail)
 puts results[0].sum / results[1]
