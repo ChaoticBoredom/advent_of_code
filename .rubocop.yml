@@ -10,6 +10,9 @@ Layout/FirstArrayElementIndentation:
 Layout/LineLength:
   Max: 120
 
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
 Naming/MethodParameterName:
   AllowedNames: ['x', 'y']
 
