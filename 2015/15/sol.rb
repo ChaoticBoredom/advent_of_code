@@ -10,13 +10,12 @@ def parse_input(input)
 end
 
 def get_totals(ingredients, check_calories: false)
-  options = ingredients.keys.repeated_combination(100)
-  options.map do |keys|
-    ingredient_values = []
-    keys.tally.each do |k, v|
-      ingredient_values << ingredients[k].map { |t| t * v }
-    end
-    values = ingredient_values.transpose.map(&:sum)
+  ingredients.keys.repeated_combination(100).map do |keys|
+    values = keys.
+      tally.
+      map { |k, v| ingredients[k].map { |t| t * v } }.
+      transpose.
+      map(&:sum)
 
     next if values.any?(&:negative?)
     next if check_calories && values[4] != 500
