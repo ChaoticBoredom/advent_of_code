@@ -33,17 +33,18 @@ counts = {
   :goldfish => 5,
   :trees => 3,
   :cars => 2,
-  :perfumes => 1}
+  :perfumes => 1,
+}
 
 def find_sue(sues, counts)
-  counts.each.with_index do |(key, value), i|
+  counts.each do |key, value|
     sues.select! { |_, v| v[key] == value || v[key].nil? }
   end
   sues
 end
 
-def find_sue_2(sues, counts)
-  counts.each.with_index do |(key, value), i|
+def find_sue_two(sues, counts)
+  counts.each do |key, value|
     case key
     when :cats, :trees
       sues.select! { |_, v| v[key].nil? || v[key] > value }
@@ -57,4 +58,4 @@ def find_sue_2(sues, counts)
 end
 
 puts find_sue(parse_input(input), counts).keys
-puts find_sue_2(parse_input(input), counts).keys
+puts find_sue_two(parse_input(input), counts).keys
