@@ -1,16 +1,5 @@
 require_relative "../../aoc_input"
 
-class Reindeer
-  attr_accessor :fly_time, :fly_speed, :rest_time, :current_distance
-
-  def initialize
-    @fly_time = 0
-    @fly_speed = 0
-    @rest_time = 0
-    @current_distance = 0
-  end
-end
-
 input = get_input(2015, 14).split("\n")
 
 def parse_input(input)
