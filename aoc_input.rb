@@ -28,6 +28,16 @@ rescue OpenURI::HTTPError
   "Error fetching input"
 end
 
+def parse_input_as_hash_of_symbols(input)
+  h = {}
+  input.split("\n").each.with_index do |l, y|
+    l.chars.each.with_index do |c, x|
+      h[[x, y]] = c
+    end
+  end
+  h
+end
+
 def headers
   @headers ||= {
     "Cookie" => ENV.fetch("COOKIE") { File.read("#{source_root}/.session/cookie").strip },
