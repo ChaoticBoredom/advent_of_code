@@ -27,49 +27,41 @@ def apply_spell_effects(boss_data, player_data, effects)
       boss_data[:hp] -= SPELLS[k][:damage]
       player_data[:hp] += SPELLS[k][:heal]
     when :shield
-      player_data[:armor] = SPELLS[k][:armor]
+      player_data[:armor] = effects[k] <= 0 ? 0 : SPELLS[k][:armor]
     when :recharge
       player_data[:mana] += SPELLS[k][:mana_restore]
     end
+
+    effects.delete(k) if effects[k] <= 0
   end
 end
 
-def clear_spell_effects(player_data, effects)
-  effects.each do |k, v|
-    effects.delete(k) if v <= 0
-  end
-  player_data[:armor] = 0
-end
+def run_battle(input, effects, used_mana, hard_mode: false)
+  boss_data = parse_input(input)
+  player_data = { :hp => 50, :mana => 500, :armor => 0 }
 
-def run_battle(player_data, boss_data, effects, used_mana, hard_mode: false)
   until boss_data[:hp] <= 0 || player_data[:hp] <= 0
-    if hard_mode
-      player_data[:hp] -= 1
-      break if boss_data[:hp] <= 0 || player_data[:hp] <= 0
-    end
-
-    run_turn(player_data, boss_data, effects) { used_mana = player_turn(player_data, effects, used_mana) }
+    player_data[:hp] -= 1 if hard_mode
     break if boss_data[:hp] <= 0 || player_data[:hp] <= 0
 
-    run_turn(player_data, boss_data, effects) { boss_turn(player_data, boss_data) }
+    used_mana = player_turn(player_data, boss_data, effects, used_mana)
+    break if boss_data[:hp] <= 0 || player_data[:hp] <= 0
+
+    boss_turn(player_data, boss_data, effects)
   end
 
   winner = boss_data[:hp] <= 0 ? "player" : "boss"
   [winner, used_mana]
 end
 
-def run_turn(player_data, boss_data, effects)
+def player_turn(player_data, boss_data, effects, used_mana)
   apply_spell_effects(boss_data, player_data, effects)
-  yield
-  clear_spell_effects(player_data, effects)
-end
 
-def player_turn(player_data, effects, used_mana)
   return used_mana if SPELLS.values.all? { |v| v[:mana] > player_data[:mana] }
 
   spell_to_cast = nil
   loop do
-    spell_to_cast = SPELLS.keys.sample(random: Random.new(@val += 1))
+    spell_to_cast = SPELLS.keys.reject { |k| effects.keys.include?(k) }.sample
     break if player_data[:mana] >= SPELLS[spell_to_cast][:mana]
   end
 
@@ -81,22 +73,18 @@ def player_turn(player_data, effects, used_mana)
   used_mana
 end
 
-def boss_turn(player_data, boss_data)
+def boss_turn(player_data, boss_data, effects)
+  apply_spell_effects(boss_data, player_data, effects)
+
   player_data[:hp] -= [boss_data[:damage] - player_data[:armor], 1].max
 end
 
-player_data = { :hp => 50, :mana => 500, :armor => 0 }
-boss_data = parse_input(input)
-
-# Despite using sample, enforcing the seed ensures repeated results
-@val = 400_000
-puts 100_000.times.map { run_battle(player_data.dup, boss_data.dup, {}, 0) }.
+puts 200_000.times.map { run_battle(input, {}, 0) }.
   reject { |x| x.first == "boss" }.
   min_by(&:last).
   last
 
-@val = 1_300_000
-puts 100_000.times.map { run_battle(player_data.dup, boss_data.dup, {}, 0, hard_mode: true) }.
+puts 200_000.times.map { run_battle(input, {}, 0, hard_mode: true) }.
   reject { |x| x.first == "boss" }.
   min_by(&:last).
   last
