@@ -1,26 +1,25 @@
 require_relative "../../aoc_input"
 
-input = get_input(2024, "1").split("\n")
+input = get_input(2024, "1").split("\n").map { |x| x.split(/\s+/).map(&:to_i) }
 
-res = input.map { |x| x.split("   ").map(&:to_i) }
+left, right = input.transpose
 
-left, right = res.transpose
+def find_differences(left, right)
+  left.sort!
+  right.sort!
 
-differences = []
+  differences = left.map.with_index { |lv, i| (lv - right[i]).abs }
 
-left.sort!
-right.sort!
-left.each.with_index do |_, i|
-  differences << (left[i] - right[i]).abs
+  differences.sum
 end
 
-puts differences.sum
+def find_similarities(left, right)
+  right_tally = right.tally
 
-right_tally = right.tally
+  similarities = left.map { |lv| lv * right_tally.fetch(lv, 0) }
 
-similarities = []
-left.each.with_index do |_, i|
-  similarities << (left[i] * right_tally.fetch(left[i], 0))
+  similarities.sum
 end
 
-puts similarities.sum
+puts find_differences(left, right)
+puts find_similarities(left, right)
