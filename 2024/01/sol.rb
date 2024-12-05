@@ -1,6 +1,6 @@
 require_relative "../../aoc_input"
 
-input = get_input(2024, "1").split("\n").map { |x| x.split(/\s+/).map(&:to_i) }
+input = get_input(2024, 1).split("\n").map { |x| x.split(/\s+/).map(&:to_i) }
 
 left, right = input.transpose
 
