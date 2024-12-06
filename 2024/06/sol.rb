@@ -29,16 +29,20 @@ def map_input(input)
   [map, start]
 end
 
-def guard_speed_walk(map, loc)
+def guard_speed_walk(map, loc, track_direction: false)
   visited = Set.new
   DIRS.cycle do |d|
     new_locs = get_new_locs(loc, d)
     valid_locs = new_locs.take_while { |x| !map.key?(x) }
-    visited += valid_locs
+    visits_with_dir = Set.new(valid_locs.map { |l| [l, d] })
+    return true if track_direction && visits_with_dir.subset?(visited)
+
+    visited += track_direction ? visits_with_dir : valid_locs
     loc = valid_locs.last
 
-    return visited if new_locs == valid_locs
+    break if new_locs == valid_locs
   end
+  track_direction ? false : visited
 end
 
 def get_new_locs(loc, dir)
@@ -53,35 +57,19 @@ end
 
 def test_obstacles(input, visited)
   map, start = map_input(input)
-  obstacles = []
+  obstacle_count = 0
 
   visited.each do |val|
     next if val == start
 
     test_map = map.dup
     test_map[val] = "O"
-    obstacles << val if does_it_loop_fast?(test_map, start)
+    obstacle_count += 1 if guard_speed_walk(test_map, start, track_direction: true)
   end
-  obstacles
-end
-
-def does_it_loop_fast?(map, loc)
-  visited = Set.new
-  visited_counts = []
-  DIRS.cycle.with_index do |d, i|
-    visited_counts << visited.count if (i % 3).zero?
-    new_locs = get_new_locs(loc, d)
-    valid_locs = new_locs.take_while { |x| !map.key?(x) }
-    visited += valid_locs
-    loc = valid_locs.last
-
-    return false if new_locs == valid_locs
-
-    return true if !visited_counts.one? && visited_counts.last(5).uniq.one?
-  end
+  obstacle_count
 end
 
 visited = guard_speed_walk(*map_input(input))
 
 puts visited.count
-puts test_obstacles(input, visited).count
+puts test_obstacles(input, visited)
