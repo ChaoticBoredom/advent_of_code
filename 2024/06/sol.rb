@@ -1,5 +1,6 @@
 require_relative "../../aoc_input"
 require "set"
+require 'benchmark'
 
 input = get_input(2024, 6)
 
@@ -31,13 +32,17 @@ end
 
 def guard_speed_walk(map, loc, track_direction: false)
   visited = Set.new
+  obstacles = Set.new
+
   DIRS.cycle do |d|
     new_locs = get_new_locs(loc, d)
     valid_locs = new_locs.take_while { |x| !map.key?(x) }
-    visits_with_dir = Set.new(valid_locs.map { |l| [l, d] })
-    return true if track_direction && visits_with_dir.subset?(visited)
+    obs = [(new_locs - valid_locs).first, d]
+    return true if track_direction && obstacles.include?(obs)
 
-    visited += track_direction ? visits_with_dir : valid_locs
+    obstacles += [[(new_locs - valid_locs).first, d]]
+
+    visited += valid_locs
     loc = valid_locs.last
 
     break if new_locs == valid_locs
@@ -62,9 +67,9 @@ def test_obstacles(input, visited)
   visited.each do |val|
     next if val == start
 
-    test_map = map.dup
-    test_map[val] = "O"
-    obstacle_count += 1 if guard_speed_walk(test_map, start, track_direction: true)
+    map[val] = "O"
+    obstacle_count += 1 if guard_speed_walk(map, start, track_direction: true)
+    map.delete(val)
   end
   obstacle_count
 end
