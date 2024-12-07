@@ -1,6 +1,5 @@
 require_relative "../../aoc_input"
 require "set"
-require 'benchmark'
 
 input = get_input(2024, 6)
 
@@ -40,7 +39,7 @@ def guard_speed_walk(map, loc, track_direction: false)
     obs = [(new_locs - valid_locs).first, d]
     return true if track_direction && obstacles.include?(obs)
 
-    obstacles += [[(new_locs - valid_locs).first, d]]
+    obstacles += [obs]
 
     visited += valid_locs
     loc = valid_locs.last
@@ -51,13 +50,17 @@ def guard_speed_walk(map, loc, track_direction: false)
 end
 
 def get_new_locs(loc, dir)
-  if dir[0].zero?
-    range = dir[1].negative? ? loc[1].downto(1) : loc[1].upto(MAX_J)
-    range.map { |j_val| [loc[0], j_val] }
-  else
-    range = dir[0].negative? ? loc[0].downto(1) : loc[0].upto(MAX_I)
-    range.map { |i_val| [i_val, loc[1]] }
+  res = loc.zip(dir).map do |l, d|
+    if d.zero?
+      [l]
+    else
+      range = d.negative? ? l.downto(1) : l.upto([MAX_I, MAX_J].max)
+      [*range]
+    end
   end
+
+  counts = res.map(&:count)
+  res.map { |x| x.one? ? x * counts.max : x }.transpose
 end
 
 def test_obstacles(input, visited)
