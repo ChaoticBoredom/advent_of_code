@@ -43,6 +43,6 @@ ARGF.argv.each do |year|
 
     puts format_time(timing.real)
 
-    puts results
+    puts results, "\n"
   end
 end
