@@ -21,12 +21,22 @@ def format_time(sec)
   end
 end
 
+def get_sol_file(year, day_string)
+  file_path = "#{__dir__}/#{year}/#{day_string}/sol.rb"
+  return file_path if File.file?(file_path)
+
+  print "SOLUTION NOT FOUND".green.bright.bg(:red).blink, "\n\n"
+  nil
+end
+
 ARGF.argv.each do |year|
   (1..25).each do |day|
     day_string = day.to_s.rjust(2, "0")
-    file_path = "#{__dir__}/#{year}/#{day_string}/sol.rb"
     results = nil
     print year.red, "\t", day_string.green, "\t\t"
+    file_path = get_sol_file(year, day_string)
+    next unless file_path
+
     timing = Benchmark.measure do
       results = `#{RUBY} #{file_path}`
     end
