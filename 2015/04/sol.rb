@@ -8,7 +8,7 @@ def find_number(input, zero_count)
   idx = 0
   Kernel.loop do
     output = Digest::MD5.hexdigest(input + idx.to_s)
-    return idx if output.chars.first(zero_count).all? { |x| x == "0" }
+    return idx if output =~ /\A0{#{zero_count}}/
 
     idx += 1
   end
