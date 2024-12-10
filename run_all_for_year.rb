@@ -8,6 +8,19 @@ RUBY = File.join(RbConfig::CONFIG["bindir"], RbConfig::CONFIG["ruby_install_name
 
 using Rainbow
 
+def format_time(sec)
+  time_string = format("%<minutes>02d:%<seconds>08.5f", { :minutes => sec / 60 % 60, :seconds => sec % 60 })
+  if sec < 5
+    time_string.green
+  elsif sec.between?(5, 60)
+    time_string.yellow
+  elsif sec.between?(60, 120)
+    time_string.red
+  else
+    time_string.red.bright
+  end
+end
+
 ARGF.argv.each do |year|
   (1..25).each do |day|
     day_string = day.to_s.rjust(2, "0")
@@ -18,15 +31,7 @@ ARGF.argv.each do |year|
       results = `#{RUBY} #{file_path}`
     end
 
-    if timing.real < 5
-      puts timing.real.to_s.green
-    elsif timing.real.between?(5, 60)
-      puts timing.real.to_s.yellow
-    elsif timing.real.between?(60, 120)
-      puts timing.real.to_s.red
-    else
-      puts timing.real.to_s.red.bright
-    end
+    puts format_time(timing.real)
 
     puts results
   end
