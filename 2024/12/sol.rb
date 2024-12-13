@@ -11,8 +11,8 @@ DIRS = {
   "W" => Vector[-1, 0],
 }.freeze
 
-MAX_X = input.split("\n").first.chars.count
-MAX_Y = input.split("\n").count
+DIAGS = DIRS.to_a.combination(2).to_a.map { |a, b| [a[0] + b[0], a[1] + b[1]] }.reject { |x| x.last.zero? }.freeze
+ALL_DIRS = DIAGS.to_h.merge(DIRS).freeze
 
 def map_plots(input)
   plots = Hash.new([])
@@ -25,7 +25,8 @@ def map_plots(input)
 
   plots.values.each.with_object([]) do |v, regions|
     visited = Set.new
-    until visited == Set.new(v)
+    all_plots = Set.new(v)
+    until visited == all_plots
       regions << Set.new
       to_visit = Set.new([(v - visited.to_a).first])
       regions[-1], visited = get_all_adjacent(regions[-1], visited, to_visit, v)
@@ -64,9 +65,7 @@ def calculate_perimeter(plots)
 end
 
 def calculate_edges(plots)
-  diags = DIRS.to_a.combination(2).to_a.map { |a, b| [a[0] + b[0], a[1] + b[1]] }.reject { |x| x.last.zero? }
-  all_dirs = diags.to_h.merge(DIRS)
-  plots.map { |x| corner_counter(all_dirs.map { |k, v| k if plots.include?(v + x) }.compact) }.sum
+  plots.map { |x| corner_counter(ALL_DIRS.map { |k, v| k if plots.include?(v + x) }.compact) }.sum
 end
 
 def corner_counter(surrounding)
