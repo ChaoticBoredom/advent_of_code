@@ -29,6 +29,8 @@ def get_sol_file(year, day_string)
   nil
 end
 
+puts "YEAR\tDAY\t\tTIME".bold
+
 ARGF.argv.each do |year|
   (1..25).each do |day|
     day_string = day.to_s.rjust(2, "0")
