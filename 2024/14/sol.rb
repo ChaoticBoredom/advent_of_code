@@ -66,5 +66,6 @@ Kernel.loop do
 
   i += 1
 end
-# display_bots(robots)
+
+display_bots(robots) if ARGF.argv.include?("display")
 puts i
