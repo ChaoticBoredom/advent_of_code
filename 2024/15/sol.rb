@@ -20,16 +20,14 @@ def build_maze(maze, modifier = 1)
   boxes.each.with_index(0) do |line, y|
     line.chars.each.with_index(0) do |c, x|
       if c == "@"
-        bot_loc = []
-        modifier.times { |i| bot_loc << Vector[x * modifier - i, y] }
-        bot_loc.reverse!
+        bot_loc = Vector[x, y]
         maze_hash[:bot] = bot_loc
         next
       end
       next if c == "."
 
       modifier.times do |i|
-        maze_hash[Vector[x * modifier - i, y]] = [c, Vector[x, y]]
+        maze_hash[Vector[x * modifier + i, y]] = [c, Vector[x * modifier, y]]
       end
     end
   end
@@ -37,7 +35,7 @@ def build_maze(maze, modifier = 1)
 end
 
 def move_bot(move_dir, maze, modifier = 1)
-  bot_loc = maze[:bot].first
+  bot_loc = maze[:bot]
   new_loc = move_dir + bot_loc
 
   return maze if maze.fetch(new_loc, ["."]).first == "#"
@@ -47,7 +45,7 @@ def move_bot(move_dir, maze, modifier = 1)
 
   return maze if maze.fetch(new_loc, ["."]).first == "#"
 
-  maze[:bot] = [chain_start]
+  maze[:bot] = chain_start
   csc = maze.delete(chain_start)
 
   maze[new_loc] = ["O", new_loc] if csc
