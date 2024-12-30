@@ -27,4 +27,3 @@ end
 ranges = convert_to_range(input)
 puts count_contained(ranges)
 puts count_overlaps(ranges)
-puts "Done"

@@ -76,5 +76,3 @@ puts monkeys.map { |_, v| v.counted }.max(2).inject(:*)
 monkeys = parse_monkeys(input)
 run_monkeys(monkeys, 10_000, false)
 puts monkeys.map { |_, v| v.counted }.max(2).inject(:*)
-
-puts "done"
