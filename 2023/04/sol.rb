@@ -6,7 +6,7 @@ def count_cards(input)
   winners = []
   input.each do |card|
     nums = get_card_numbers(card)
-    winners << nums.count.positive? ? (2**(nums.count - 1)) : 0
+    winners << (nums.count.positive? ? (2**(nums.count - 1)) : 0)
   end
   winners.sum
 end
