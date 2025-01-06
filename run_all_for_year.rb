@@ -2,8 +2,6 @@ require "benchmark"
 require "rbconfig"
 require "rainbow/refinement"
 
-THIS_FILE = File.expand_path(__FILE__)
-
 RUBY = File.join(RbConfig::CONFIG["bindir"], RbConfig::CONFIG["ruby_install_name"])
 
 using Rainbow

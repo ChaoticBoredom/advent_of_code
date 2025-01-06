@@ -29,5 +29,5 @@ def run_new_race(time, deer)
 end
 
 deer = parse_input(input)
-puts(run_old_school_race(2503, deer).max_by { |v| v[1] })
-puts(run_new_race(2503, deer).max_by { |_, v| v })
+puts(run_old_school_race(2503, deer).max_by { |v| v[1] }.last)
+puts(run_new_race(2503, deer).max_by { |_, v| v }.last)

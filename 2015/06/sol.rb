@@ -16,41 +16,24 @@ def parse_line(line)
   [action, x_range, y_range]
 end
 
-def on_off(lights, action, x_range, y_range)
-  case action
-  when "turn on"
-    iterate(lights, x_range, y_range) { |_| true }
-  when "toggle"
-    iterate(lights, x_range, y_range, &:!)
-  when "turn off"
-    iterate(lights, x_range, y_range) { |_| false }
-  end
-end
-
-def increase_brightness(lights, action, x_range, y_range)
-  case action
-  when "turn on"
-    iterate(lights, x_range, y_range) { |v| v + 1 }
-  when "toggle"
-    iterate(lights, x_range, y_range) { |v| v + 2 }
-  when "turn off"
-    iterate(lights, x_range, y_range) { |v| [v - 1, 0].max }
-  end
-end
-
-def iterate(light_hash, x_range, y_range, &action_method)
-  x_range.each do |x|
-    y_range.each do |y|
-      light_hash[[x, y]] = action_method.call(light_hash[[x, y]])
+def adjust_lights(lights, brights, line)
+  a, x_range, y_range = parse_line(line)
+  x_range.to_a.product(y_range.to_a).each do |coords|
+    case a
+    when "turn on"
+      lights[coords] = true
+      brights[coords] = brights[coords] + 1
+    when "toggle"
+      lights[coords] = !lights[coords]
+      brights[coords] = brights[coords] + 2
+    when "turn off"
+      lights[coords] = false
+      brights[coords] = [brights[coords] - 1, 0].max
     end
   end
 end
 
-input.each do |l|
-  a, c1, c2 = parse_line(l)
-  on_off(lights, a, c1, c2)
-  increase_brightness(brights, a, c1, c2)
-end
+input.each { |l| adjust_lights(lights, brights, l) }
 
 puts lights.values.count(true)
 puts brights.values.sum
